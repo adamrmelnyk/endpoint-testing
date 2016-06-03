@@ -1,0 +1,6 @@
+example:
+  method: "get"
+  url: "http://ip.jsontest.com/"
+  headers:
+    accept: "application/json"
+    content_type: "application/json"
