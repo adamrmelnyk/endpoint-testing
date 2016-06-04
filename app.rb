@@ -23,7 +23,7 @@ def request_params endpoint
     url: endpoints[endpoint]["url"],
     headers: endpoints[endpoint]["headers"].symbolize_keys!,
     verify_ssl: OpenSSL::SSL::VERIFY_NONE,
-#   If you require basic auth 
+#   If you require basic auth
 #   user: ENV['AUTH_USER'],
 #   password: ENV['AUTH_PASSWORD'],
     payload: endpoints[endpoint]["payload"]
@@ -31,9 +31,13 @@ def request_params endpoint
 end
 
 def make_request endpoint
-  if JSON.parse(RestClient::Request.execute(request_params(endpoint)).try(:force_encoding, 'UTF-8'))
-    "The endpoint #{endpoints[endpoint]["url"]} seems to be responding"
+  begin
+    if JSON.parse(RestClient::Request.execute(request_params(endpoint)).try(:force_encoding, 'UTF-8'))
+      "The endpoint #{endpoints[endpoint]["url"]} seems to be responding"
+    end
+  rescue JSON::ParserError
+    "The endpoint #{endpoints[endpoint]["url"]} doesn't seem to be responding"
+  rescue RestClient::Exception
+    "The endpoint #{endpoints[endpoint]["url"]} doesn't seem to be responding"
   end
-rescue RestClient::Exception
-  "The endpoint #{endpoints[endpoint]["url"]} doesn't seem to be responding"
 end
